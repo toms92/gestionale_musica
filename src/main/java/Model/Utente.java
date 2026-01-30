@@ -1,9 +1,7 @@
 package Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import Misc.BooleanYnConverter;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Date;
@@ -16,7 +14,9 @@ public class Utente {
     @GeneratedValue
     private long id;
 
+    @Convert(converter = BooleanYnConverter.class)
     private boolean admin;
+
     private String nome_utente;
     private String password;
     private Date data_registrazione;
