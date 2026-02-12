@@ -1,12 +1,12 @@
-package Repository;
+package com.example.spotifyindiano.Repository;
 
-import Model.Utente;
+import com.example.spotifyindiano.Model.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UtenteRepository extends JpaRepository<Utente, Long> {
     boolean existsByNomeUtenteAndPassword(String nomeUtente, String password);
-    boolean addUtente(Utente utente);
+    boolean existsByNomeUtente(String nomeUtente);
 
 }

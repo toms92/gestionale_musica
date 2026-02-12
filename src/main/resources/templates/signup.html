@@ -1,0 +1,50 @@
+<h1>Crea il tuo account</h1>
+
+<div th:if="${errorMessage}" style="color: white; background-color: #e94560; padding: 10px; border-radius: 5px;">
+  <strong>Errore:</strong> <span th:text="${errorMessage}">Messaggio di errore</span>
+</div>
+
+<form th:action="@{/signup}" th:object="${utente}" method="post">
+
+  <div th:if="${#fields.hasAnyErrors()}" style="color: orange;">
+    <p>Per favore, correggi gli errori nel modulo sottostante.</p>
+  </div>
+
+  <input type="hidden" th:field="*{admin}" />
+
+  <div>
+    <label for="nomeUtente">Nome utente:</label>
+    <input type="text" id="nomeUtente" th:field="*{nomeUtente}" />
+    <p th:if="${#fields.hasErrors('nomeUtente')}" th:errors="*{nomeUtente}" style="color: red; font-size: 0.8em;"></p>
+  </div>
+
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" th:field="*{password}" />
+    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color: red; font-size: 0.8em;"></p>
+  </div>
+
+  <div>
+    <label for="confirmPassword">Conferma password:</label>
+    <input type="password" id="confirmPassword" name="confirmPassword" required />
+  </div>
+
+  <div>
+    <label for="email">email:</label>
+    <input type="text" id="email" th:field="*{email}" />
+    <p th:if="${#fields.hasErrors('nomeUtente')}" th:errors="*{email}" style="color: red; font-size: 0.8em;"></p>
+  </div>
+
+  <button type="submit">Crea account</button>
+
+  <p>
+    Hai già un account?
+    <a th:href="@{/login}">Accedi</a>
+  </p>
+
+  <p>
+    <a th:href="@{/}"> Torna alla pagina principale
+    </a>
+  </p>
+
+</form>

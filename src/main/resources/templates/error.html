@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MusicHub - Errore</title>
+</head>
+<body>
+
+<div>
+    <h1>Ops!</h1>
+    <h2>Qualcosa è andato storto</h2>
+
+    <p th:text="${errorMessage != null ? errorMessage : message}">
+        Si è verificato un errore inaspettato.
+    </p>
+
+    <hr>
+
+    <p>Puoi provare a tornare alla pagina precedente o ricominciare la procedura.</p>
+
+    <a th:href="@{/signup}">Torna alla registrazione</a>
+    <br>
+    <a th:href="@{/login}">Vai al login</a>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>MusicHub - Login</title>
+</head>
+<body>
+
+<h1>MusicHub - Accedi</h1>
+
+<div th:if="${param.error}">
+    <p style="color: red;">Nome utente o password non validi.</p>
+</div>
+
+<div th:if="${param.logout}">
+    <p>Sei uscito correttamente dal sistema.</p>
+</div>
+
+<form th:action="@{/login}" method="post">
+    <div>
+        <label for="nomeUtente">Nome utente:</label>
+        <input type="text" id="nomeUtente" name="nomeUtente" required autofocus />
+    </div>
+
+    <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+    </div>
+
+    <div>
+        <input type="checkbox" id="remember-me" name="remember-me" />
+        <label for="remember-me">Ricordami</label>
+    </div>
+
+    <button type="submit">Accedi</button>
+</form>
+
+<hr>
+
+<p>
+    Nuovo utente?
+    <a th:href="@{/signup}">Crea un account</a>
+</p>
+
+<p>
+    <a th:href="@{/}"> Torna alla pagina principale
+    </a>
+</p>
+
+</body>
+</html>

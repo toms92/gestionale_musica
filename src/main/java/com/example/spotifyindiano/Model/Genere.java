@@ -1,4 +1,4 @@
-package Model;
+package com.example.spotifyindiano.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -6,16 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity
 @Data
-@Table(name = "autori")
-public class Autore {
+@Entity
+@Table(name = "generi")
+public class Genere {
     @Id
     @GeneratedValue
     private Long id;
 
     private String nome;
-    private String descrizione;
-    private String ascoltatoriMensili;
-
 }

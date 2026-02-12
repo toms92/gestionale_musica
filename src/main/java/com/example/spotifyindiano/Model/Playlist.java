@@ -1,4 +1,4 @@
-package Model;
+package com.example.spotifyindiano.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;

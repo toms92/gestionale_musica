@@ -1,4 +1,4 @@
-package Misc;
+package com.example.spotifyindiano.Misc;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
