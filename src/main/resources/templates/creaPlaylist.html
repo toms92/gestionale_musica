@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SpotifyIndiano - Crea Playlist</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+  <header class="header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="logo"></span>
+        <a th:href="@{/}">SpotifyIndiano</a>
+      </div>
+      <div class="menu">
+        <a th:href="@{/playlist}">Playlist</a>
+        <a th:href="@{/logout}">Esci</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1 class="page-title">Crea una nuova playlist</h1>
+      <div th:if="${errorMessage}" class="alert error" th:text="${errorMessage}"></div>
+
+      <!-- Filtro e ordinamento -->
+      <form th:action="@{/playlist/crea}" method="get" class="controls">
+        <input class="input" type="text" name="search" placeholder="Cerca brani..." th:value="${search}">
+        <select class="select" name="orderBy">
+          <option value="" th:selected="${orderBy} == null or ${orderBy} == ''">Predefinito</option>
+          <option value="durata_asc" th:selected="${orderBy} == 'durata_asc'">Minutaggio (Crescente)</option>
+          <option value="durata_desc" th:selected="${orderBy} == 'durata_desc'">Minutaggio (Decrescente)</option>
+          <option value="genere" th:selected="${orderBy} == 'genere'">Ordina per genere</option>
+        </select>
+        <button class="button" type="submit">Applica</button>
+      </form>
+
+      <form th:action="@{/playlist/crea}" method="post" class="form-grid">
+        <div>
+          <label for="nome">Nome Playlist</label>
+          <input class="input" type="text" id="nome" name="nome" required>
+        </div>
+
+        <div>
+          <h3>Seleziona i brani</h3>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="checkbox-col">Sel.</th>
+                  <th>Titolo</th>
+                  <th>Artista/i</th>
+                  <th>Durata</th>
+                  <th>Generi</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="brano : ${brani}">
+                  <td class="checkbox-col">
+                    <input type="checkbox" name="idBrani" th:value="${brano.id}" th:id="'brano_' + ${brano.id}">
+                  </td>
+                  <td>
+                    <label th:for="'brano_' + ${brano.id}" th:text="${brano.titolo}" style="cursor:pointer; display:block;"></label>
+                  </td>
+                  <td>
+                    <span th:if="${#lists.isEmpty(brano.autori)}" class="muted">Sconosciuto</span>
+                    <span th:if="${!#lists.isEmpty(brano.autori)}">
+                      <span th:each="a, iterStat : ${brano.autori}" th:text="${a.nome} + ${!iterStat.last ? ', ' : ''}"></span>
+                    </span>
+                  </td>
+                  <td th:text="${brano.durata}"></td>
+                  <td>
+                    <div class="pills">
+                      <span class="pill" th:each="g : ${brano.generi}" th:text="${g.nome}">Genere</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex">
+          <a class="button ghost" th:href="@{/playlist}">Annulla</a>
+          <span class="right"></span>
+          <button class="button primary" type="submit">Crea playlist</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div class="spacer"></div>
+</body>
+</html>

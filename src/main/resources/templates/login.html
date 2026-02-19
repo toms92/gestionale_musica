@@ -1,51 +1,58 @@
 <!DOCTYPE html>
 <html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>MusicHub - Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SpotifyIndiano - Login</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
+  <header class="header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="logo"></span>
+        <a th:href="@{/}">SpotifyIndiano</a>
+      </div>
+      <div class="menu">
+        <a th:href="@{/signup}">Registrati</a>
+      </div>
+    </nav>
+  </header>
 
-<h1>MusicHub - Accedi</h1>
+  <main class="container">
+    <div class="card" style="max-width:560px; margin:0 auto;">
+      <h1 class="page-title">Accedi</h1>
 
-<div th:if="${param.error}">
-    <p style="color: red;">Nome utente o password non validi.</p>
-</div>
+      <div th:if="${param.error}" class="alert error">Nome utente o password non validi.</div>
+      <div th:if="${param.logout}" class="alert info">Sei uscito correttamente dal sistema.</div>
 
-<div th:if="${param.logout}">
-    <p>Sei uscito correttamente dal sistema.</p>
-</div>
+      <form th:action="@{/login}" method="post" class="form-grid">
+        <div>
+          <label for="nomeUtente">Nome utente</label>
+          <input class="input" type="text" id="nomeUtente" name="nomeUtente" required autofocus />
+        </div>
 
-<form th:action="@{/login}" method="post">
-    <div>
-        <label for="nomeUtente">Nome utente:</label>
-        <input type="text" id="nomeUtente" name="nomeUtente" required autofocus />
+        <div>
+          <label for="password">Password</label>
+          <input class="input" type="password" id="password" name="password" required />
+        </div>
+
+        <label class="flex" style="gap:8px;">
+          <input type="checkbox" id="remember-me" name="remember-me" />
+          <span class="muted">Ricordami</span>
+        </label>
+
+        <div class="flex">
+          <a class="button ghost" th:href="@{/}">Annulla</a>
+          <span class="right"></span>
+          <button class="button primary" type="submit">Accedi</button>
+        </div>
+      </form>
+
+      <p class="subtitle">Nuovo utente? <a th:href="@{/signup}">Crea un account</a></p>
     </div>
+  </main>
 
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required />
-    </div>
-
-    <div>
-        <input type="checkbox" id="remember-me" name="remember-me" />
-        <label for="remember-me">Ricordami</label>
-    </div>
-
-    <button type="submit">Accedi</button>
-</form>
-
-<hr>
-
-<p>
-    Nuovo utente?
-    <a th:href="@{/signup}">Crea un account</a>
-</p>
-
-<p>
-    <a th:href="@{/}"> Torna alla pagina principale
-    </a>
-</p>
-
+  <div class="spacer"></div>
 </body>
 </html>

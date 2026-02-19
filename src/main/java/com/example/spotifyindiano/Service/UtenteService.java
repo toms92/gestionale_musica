@@ -15,6 +15,10 @@ public class UtenteService {
         return repository.existsByNomeUtenteAndPassword(nomeUtente, password);
     }
 
+    public Utente getByNomeUtenteAndPassword(String nomeUtente, String password) {
+        return repository.findByNomeUtenteAndPassword(nomeUtente, password);
+    }
+
     public boolean addUtente(Utente utente) throws UserAlreadyCreatedException {
         if(utente.getNomeUtente() == null || utente.getNomeUtente().isBlank()){
             throw new IllegalArgumentException("Nome utente non valido");

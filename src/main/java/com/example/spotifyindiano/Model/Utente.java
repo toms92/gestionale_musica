@@ -3,7 +3,9 @@ package com.example.spotifyindiano.Model;
 import com.example.spotifyindiano.Misc.BooleanYnConverter;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.time.LocalDate;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 @Data
@@ -13,20 +15,23 @@ public class Utente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @Convert(converter = BooleanYnConverter.class)
     @Column(nullable = false)
     private boolean admin = false;
 
-
+    @Column(name = "nome_utente", nullable = false)
     private String nomeUtente; // Rinominato in camelCase
+
+    @Column(nullable = false)
     private String email;
 
 
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
     private LocalDateTime dataRegistrazione;
 
     @PrePersist
@@ -35,4 +40,5 @@ public class Utente {
             this.dataRegistrazione = LocalDateTime.now();
         }
     }
+
 }

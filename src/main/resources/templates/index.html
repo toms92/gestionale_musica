@@ -1,12 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SpotifyIndiano - Home</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
-<p>
-    <a th:href="@{/login}">Accedi</a>
-</p>
+  <header class="header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="logo"></span>
+        <a th:href="@{/}">SpotifyIndiano</a>
+      </div>
+      <div class="menu">
+        <a th:href="@{/login}" th:if="${session.utente == null}">Accedi</a>
+        <a th:href="@{/playlist}" th:if="${session.utente != null}">Playlist</a>
+        <a th:href="@{/logout}" th:if="${session.utente != null}">Esci</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <h1 class="page-title">Catalogo brani</h1>
+      <p class="subtitle">Sfoglia i brani disponibili. Accedi per creare le tue playlist.</p>
+
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Titolo</th>
+              <th>Artista/i</th>
+              <th>Durata</th>
+              <th>Generi</th>
+              <th>Link YouTube</th>
+              <th>Link MP4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="brano : ${brani}">
+              <td th:text="${brano.id}">1</td>
+              <td th:text="${brano.titolo}">Titolo</td>
+              <td>
+                <span th:if="${#lists.isEmpty(brano.autori)}" class="muted">Sconosciuto</span>
+                <span th:if="${!#lists.isEmpty(brano.autori)}">
+                  <span th:each="a, iterStat : ${brano.autori}" th:text="${a.nome} + ${!iterStat.last ? ', ' : ''}"></span>
+                </span>
+              </td>
+              <td th:text="${brano.durata}">00:00:00</td>
+              <td>
+                <div class="pills">
+                  <span class="pill" th:each="g : ${brano.generi}" th:text="${g.nome}">Genere</span>
+                </div>
+              </td>
+              <td>
+                <a th:href="${brano.link_yt}" target="_blank">Apri</a>
+              </td>
+              <td>
+                <a th:href="${brano.link_mp4}" target="_blank" th:if="${brano.link_mp4 != null && !#strings.isEmpty(brano.link_mp4)}">Scarica</a>
+                <span class="muted" th:if="${brano.link_mp4 == null || #strings.isEmpty(brano.link_mp4)}">N/D</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="spacer"></div>
 </body>
 </html>
