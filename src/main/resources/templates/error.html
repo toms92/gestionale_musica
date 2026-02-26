@@ -4,37 +4,139 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SpotifyIndiano - Errore</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. VARIABILI E BASE --- */
+    :root {
+      --bg-dark: #09090b;
+      --card-bg: #18181b;
+      --primary: #1db954;
+      --danger: #e22134;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top center, #2a1a1a 0%, #09090b 100%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* --- 2. ANIMAZIONI --- */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(226, 33, 52, 0.4); }
+      70% { box-shadow: 0 0 0 20px rgba(226, 33, 52, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(226, 33, 52, 0); }
+    }
+
+    /* --- 3. ERROR CARD --- */
+    .auth-card {
+      background-color: var(--card-bg);
+      padding: 3rem 2rem;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      border: 1px solid rgba(226, 33, 52, 0.2);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: fadeInDown 0.5s ease-out;
+    }
+
+    .error-icon-wrapper {
+      width: 80px;
+      height: 80px;
+      background: rgba(226, 33, 52, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      animation: pulse-red 2s infinite;
+    }
+
+    .auth-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.025em; }
+    .auth-subtitle { color: var(--text-muted); font-size: 1rem; line-height: 1.6; }
+
+    /* --- 4. PULSANTI E LAYOUT --- */
+    .flex {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 2.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      flex-wrap: wrap;
+    }
+
+    .button {
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+    }
+
+    .button-primary { background: var(--primary); color: black; }
+    .button-primary:hover { transform: scale(1.05); background: #1ed760; }
+
+    .button-secondary { background: #27272a; color: white; }
+    .button-secondary:hover { background: #3f3f46; }
+
+    .button-ghost { background: transparent; color: white; border: 1px solid #3f3f46; }
+    .button-ghost:hover { background: rgba(255, 255, 255, 0.05); }
+
+    /* --- 5. RESPONSIVE --- */
+    @media (max-width: 480px) {
+      .flex { flex-direction: column; align-items: stretch; }
+      .button { width: 100%; justify-content: center; }
+    }
+  </style>
 </head>
-<body>
-  <header class="header">
-    <nav class="nav">
-      <div class="brand">
-        <span class="logo"></span>
-        <a th:href="@{/}">SpotifyIndiano</a>
-      </div>
-      <div class="menu">
-        <a th:href="@{/login}">Accedi</a>
-        <a th:href="@{/signup}">Registrati</a>
-      </div>
-    </nav>
-  </header>
+<body class="auth-page">
+<div class="auth-card">
+  <div class="error-icon-wrapper">
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="var(--danger)">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+    </svg>
+  </div>
 
-  <main class="container">
-    <div class="card" style="max-width:720px; margin:0 auto;">
-      <h1 class="page-title">Ops! Qualcosa è andato storto</h1>
-      <p class="subtitle" th:text="${errorMessage != null ? errorMessage : message}">Si è verificato un errore inaspettato.</p>
+  <h1 class="auth-title">Ops! Qualcosa è andato storto</h1>
+  <p class="auth-subtitle" th:text="${errorMessage != null ? errorMessage : message}">
+    Non siamo riusciti a trovare la pagina che cercavi o si è verificato un errore tecnico.
+  </p>
 
-      <div class="flex">
-        <a class="button ghost" href="javascript:history.back()">Torna indietro</a>
-        <span class="right"></span>
-        <a class="button" th:href="@{/signup}">Registrazione</a>
-        <a class="button" th:href="@{/login}">Login</a>
-        <a class="button primary" th:href="@{/}">Home</a>
-      </div>
-    </div>
-  </main>
-
-  <div class="spacer"></div>
+  <div class="flex">
+    <a class="button button-ghost" href="javascript:history.back()">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Torna indietro
+    </a>
+    <a class="button button-secondary" th:href="@{/login}">Accedi</a>
+    <a class="button button-primary" th:href="@{/}">Torna alla Home</a>
+  </div>
+</div>
 </body>
 </html>

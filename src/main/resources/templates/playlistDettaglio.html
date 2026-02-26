@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="'SpotifyIndiano - ' + ${p.nome}"></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. PLAYLIST HERO SECTION --- */
+    .playlist-hero {
+      background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-dark) 100%);
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 24px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .playlist-card-cover {
+      background: linear-gradient(135deg, #282828 0%, #121212 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      flex-shrink: 0;
+    }
+
+    .playlist-card-cover svg {
+      fill: var(--text-muted);
+    }
+
+    /* --- 2. CONTROLLI (SEARCH & FILTERS) --- */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.03);
+      padding: 1rem;
+      border-radius: 12px;
+    }
+
+    .select {
+      background-color: var(--input-bg);
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      color: white;
+      font-size: 0.875rem;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .select:focus {
+      border-color: var(--primary);
+    }
+
+    /* --- 3. TABELLA DETTAGLI --- */
+    .table th:first-child,
+    .table td:first-child {
+      width: 50px;
+      text-align: center;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .table tr strong {
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    /* --- 4. BOTTONI SPECIFICI --- */
+    .button-danger {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+      border: 1px solid transparent;
+      font-weight: 600;
+    }
+
+    .button-danger:hover {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .button-secondary {
+      background-color: #27272a;
+      color: white;
+    }
+
+    .button-secondary:hover {
+      background-color: #3f3f46;
+    }
+
+    /* --- 5. ALERT INFO --- */
+    .alert-info {
+      background-color: rgba(59, 130, 246, 0.1);
+      border: 1px solid #3b82f6;
+      color: #3b82f6;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    /* --- 6. UTILITY --- */
+    .flex { display: flex; align-items: center; }
+    .hero-meta { color: var(--text-muted); font-size: 0.875rem; display: flex; gap: 16px; }
+    .hero-meta strong { color: var(--text-main); }
+  </style>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<div class="app-container">
+  <main class="main-content">
+    <header class="top-header">
+      <div class="header-nav">
+        <button class="nav-btn" onclick="history.back()">
+          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+      </div>
+      <div class="header-actions">
+        <a th:href="@{/logout}" class="button button-ghost button-sm">Esci</a>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <div class="playlist-hero">
+        <div class="playlist-card-cover" style="width: 192px; height: 192px;">
+          <svg viewBox="0 0 24 24" style="width: 80px; height: 80px;"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        </div>
+        <div style="flex: 1;">
+          <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; color: var(--text-muted);">Playlist</span>
+          <h1 class="page-title" style="font-size: 3.5rem; margin: 8px 0 16px 0;" th:text="${p.nome}">Nome Playlist</h1>
+          <div class="hero-meta">
+            <span><strong th:text="${#lists.size(p.braniPlaylist)}">0</strong> brani</span>
+            <span><strong th:text="${p.durata}">00:00:00</strong> durata totale</span>
+            <span>Creata il <strong th:text="${#dates.format(p.data_creazione, 'dd/MM/yyyy')}">01/01/2024</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <form th:action="@{/playlist/{id}(id=${p.id})}" method="get" class="controls">
+          <input type="text" name="search" th:value="${search}" class="input" placeholder="Cerca brano..." style="flex: 1; min-width: 200px;">
+          <select name="orderBy" class="select" onchange="this.form.submit()">
+            <option value="titolo_asc" th:selected="${orderBy == 'titolo_asc'}">Titolo (A-Z)</option>
+            <option value="titolo_desc" th:selected="${orderBy == 'titolo_desc'}">Titolo (Z-A)</option>
+            <option value="durata_asc" th:selected="${orderBy == 'durata_asc'}">Durata (Crescente)</option>
+            <option value="durata_desc" th:selected="${orderBy == 'durata_desc'}">Durata (Decrescente)</option>
+            <option value="genere" th:selected="${orderBy == 'genere'}">Genere</option>
+          </select>
+          <button type="submit" class="button button-primary">Cerca</button>
+          <a th:href="@{/playlist/{id}(id=${p.id})}" class="button button-ghost">Reset</a>
+        </form>
+
+        <div th:if="${#lists.isEmpty(p.braniPlaylist)}" class="alert alert-info">
+          Nessun brano trovato in questa playlist.
+        </div>
+
+        <div class="table-wrap" th:if="${!#lists.isEmpty(p.braniPlaylist)}">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>#</th>
+              <th>Titolo</th>
+              <th>Artista</th>
+              <th>Genere</th>
+              <th>Durata</th>
+              <th>Aggiunto</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bp, iter : ${p.braniPlaylist}">
+              <td th:text="${iter.count}">1</td>
+              <td><strong th:text="${bp.brano.titolo}">Titolo</strong></td>
+              <td>
+                <span th:each="a, i : ${bp.brano.autori}" th:text="${a.nome} + ${!i.last ? ', ' : ''}"></span>
+              </td>
+              <td>
+                <div class="pills">
+                  <span class="pill" th:each="g : ${bp.brano.generi}" th:text="${g.nome}"></span>
+                </div>
+              </td>
+              <td th:text="${bp.brano.durata}">0:00</td>
+              <td th:text="${#temporals.format(bp.dataAggiuntaBrano, 'dd MMM yyyy')}">Data</td>
+              <td>
+                <form th:action="@{/playlist/{id}/rimuovi/{branoId}(id=${p.id}, branoId=${bp.brano.id})}" method="post" onsubmit="return confirm('Rimuovere brano?');">
+                  <button type="submit" class="button button-danger button-sm">Elimina</button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 32px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px;">
+          <a th:href="@{/playlist}" class="button button-secondary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 8px;"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Torna alle playlist
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

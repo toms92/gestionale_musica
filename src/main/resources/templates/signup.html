@@ -4,70 +4,272 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SpotifyIndiano - Registrazione</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. VARIABILI E RESET --- */
+    :root {
+      --bg-dark: #09090b;        /* Nero profondo */
+      --card-bg: #18181b;        /* Grigio scuro per la card */
+      --primary: #1db954;        /* Verde Spotify classico */
+      --primary-hover: #1ed760;  /* Verde più luminoso */
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --input-bg: #27272a;
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      line-height: 1.5;
+      padding: 20px;
+    }
+
+    /* --- 2. LAYOUT CARD --- */
+    .auth-card {
+      background-color: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+      border: 1px solid #27272a;
+    }
+
+    .auth-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-icon svg {
+      width: 48px;
+      height: 48px;
+      fill: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .auth-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+
+    .auth-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    /* --- 3. FORM E INPUT --- */
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .input {
+      background-color: var(--input-bg);
+      border: 1px solid #3f3f46;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      color: white;
+      font-size: 1rem;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.2);
+    }
+
+    .input::placeholder {
+      color: #71717a;
+    }
+
+    /* Messaggi di errore sotto gli input */
+    .error-text {
+      color: var(--danger);
+      margin-top: 4px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+
+    /* --- 4. BOTTONI --- */
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      text-decoration: none;
+      gap: 8px;
+    }
+
+    .button-primary {
+      background-color: var(--primary);
+      color: #000000;
+    }
+
+    .button-primary:hover {
+      background-color: var(--primary-hover);
+      transform: scale(1.02);
+    }
+
+    .button-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
+    .button-ghost:hover {
+      color: var(--text-main);
+      background-color: rgba(255,255,255,0.05);
+    }
+
+    .button-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.8125rem;
+    }
+
+    /* --- 5. ALERT E MESSAGGI --- */
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .alert-warning {
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+    }
+
+    /* --- 6. FOOTER --- */
+    .auth-footer {
+      margin-top: 2rem;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      border-top: 1px solid #27272a;
+      padding-top: 1.5rem;
+    }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <header class="header">
-    <nav class="nav">
-      <div class="brand">
-        <span class="logo"></span>
-        <a th:href="@{/}">SpotifyIndiano</a>
-      </div>
-      <div class="menu">
-        <a th:href="@{/login}">Accedi</a>
-      </div>
-    </nav>
-  </header>
-
-  <main class="container">
-    <div class="card" style="max-width:640px; margin:0 auto;">
-      <h1 class="page-title">Crea il tuo account</h1>
-
-      <div th:if="${errorMessage}" class="alert error">
-        <strong>Errore:</strong> <span th:text="${errorMessage}">Messaggio di errore</span>
-      </div>
-
-      <form th:action="@{/signup}" th:object="${utente}" method="post" class="form-grid">
-        <input type="hidden" th:field="*{admin}" />
-
-        <div th:if="${#fields.hasAnyErrors()}" class="alert warning">
-          <p>Per favore, correggi gli errori nel modulo sottostante.</p>
-        </div>
-
-        <div>
-          <label for="nomeUtente">Nome utente</label>
-          <input class="input" type="text" id="nomeUtente" th:field="*{nomeUtente}" />
-          <p th:if="${#fields.hasErrors('nomeUtente')}" th:errors="*{nomeUtente}" class="muted" style="color:#fecaca"></p>
-        </div>
-
-        <div>
-          <label for="password">Password</label>
-          <input class="input" type="password" id="password" th:field="*{password}" />
-          <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="muted" style="color:#fecaca"></p>
-        </div>
-
-        <div>
-          <label for="confirmPassword">Conferma password</label>
-          <input class="input" type="password" id="confirmPassword" name="confirmPassword" required />
-        </div>
-
-        <div>
-          <label for="email">Email</label>
-          <input class="input" type="text" id="email" th:field="*{email}" />
-          <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="muted" style="color:#fecaca"></p>
-        </div>
-
-        <div class="flex">
-          <a class="button ghost" th:href="@{/}">Annulla</a>
-          <span class="right"></span>
-          <button class="button primary" type="submit">Crea account</button>
-        </div>
-
-        <p class="subtitle">Hai già un account? <a th:href="@{/login}">Accedi</a></p>
-      </form>
+<div class="auth-card">
+  <div class="auth-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.65 14.65c-.18.28-.56.38-.84.2-2.3-1.4-5.2-1.72-8.6-.94-.33.08-.65-.13-.73-.45-.08-.33.13-.65.45-.73 3.72-.86 6.92-.49 9.56 1.1.28.18.38.56.16.82zm1.23-2.75c-.23.35-.7.47-1.05.24-2.63-1.62-6.63-2.09-9.74-1.14-.4.12-.82-.1-.94-.5-.12-.4.1-.82.5-.94 3.55-1.08 7.95-.56 11.05 1.3.35.23.47.7.18 1.04zm.1-2.86c-3.15-1.87-8.36-2.04-11.36-1.13-.47.14-.97-.13-1.11-.6-.14-.47.13-.97.6-1.11 3.45-1.05 9.17-.85 12.83 1.32.43.25.57.82.32 1.25-.25.43-.82.57-1.28.27z"/>
+      </svg>
     </div>
-  </main>
+    <h1 class="auth-title">Crea il tuo account</h1>
+    <p class="auth-subtitle">Inizia a creare le tue playlist personali</p>
+  </div>
 
-  <div class="spacer"></div>
+  <div th:if="${errorMessage}" class="alert alert-error">
+    <strong>Errore:</strong> <span th:text="${errorMessage}">Messaggio di errore</span>
+  </div>
+
+  <div th:if="${#fields.hasErrors('${utente.*}')}" class="alert alert-warning">
+    <p>Per favore, correggi gli errori nel modulo sottostante.</p>
+  </div>
+
+  <form th:action="@{/signup}" th:object="${utente}" method="post" class="form-grid">
+    <input type="hidden" th:field="*{admin}" />
+
+    <div class="form-group">
+      <label class="form-label" for="nomeUtente">Nome utente</label>
+      <input class="input" type="text" id="nomeUtente" th:field="*{nomeUtente}" placeholder="Scegli un nome utente" required />
+      <p th:if="${#fields.hasErrors('nomeUtente')}" th:errors="*{nomeUtente}" class="error-text"></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input class="input" type="password" id="password" th:field="*{password}" placeholder="Crea una password sicura" required />
+      <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error-text"></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="confirmPassword">Conferma password</label>
+      <input class="input" type="password" id="confirmPassword" name="confirmPassword" placeholder="Ripeti la password" required />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="email">Email</label>
+      <input class="input" type="email" id="email" th:field="*{email}" placeholder="Inserisci la tua email" required />
+      <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error-text"></p>
+    </div>
+
+    <button class="button button-primary" type="submit" style="width: 100%; margin-top: 10px;">
+      Crea account
+    </button>
+  </form>
+
+  <div class="auth-footer">
+    Hai già un account? <a th:href="@{/login}">Accedi</a>
+  </div>
+
+  <div style="text-align: center; margin-top: 16px;">
+    <a th:href="@{/}" class="button button-ghost button-sm">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+      Torna alla Home
+    </a>
+  </div>
+</div>
 </body>
 </html>

@@ -37,14 +37,21 @@ public class Brano {
     private String link_yt;
     private String link_mp4;
 
-    @ManyToMany
-    @JoinTable(
-            name = "brani_autori",
-            joinColumns = @JoinColumn(name = "id_brano", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "id_autore", referencedColumnName = "id")
-    )
+    @OneToMany(mappedBy = "brano", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Autore> autori;
+    private List<BranoAutore> braniAutori = new java.util.ArrayList<>();
+
+    public java.util.Set<Autore> getAutori() {
+        if (braniAutori == null) return java.util.Set.of();
+        return braniAutori.stream()
+                .map(BranoAutore::getAutore)
+                .collect(java.util.stream.Collectors.toSet());
+    }
+
+    @OneToMany(mappedBy = "brano", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<BranoPlaylist> braniPlaylist;
 
 }

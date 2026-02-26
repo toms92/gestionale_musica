@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SpotifyIndiano - Gestione Brani</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- 1. SETUP BASE (Ereditato da Home) --- */
+    :root {
+      --bg-dark: #09090b;
+      --bg-sidebar: #000000;
+      --primary: #1db954;
+      --primary-hover: #1ed760;
+      --danger: #ef4444;
+      --text-main: #ffffff;
+      --text-muted: #a1a1aa;
+      --radius: 12px;
+      --transition: all 0.2s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); overflow: hidden; }
+
+    /* --- 2. LAYOUT STRUTTURALE --- */
+    .app-container { display: flex; width: 100vw; height: 100vh; }
+
+    .sidebar {
+      width: 260px; background-color: var(--bg-sidebar); display: flex; flex-direction: column;
+      padding: 24px 12px; border-right: 1px solid #27272a; z-index: 1000;
+    }
+
+    .main-content {
+      flex: 1; display: flex; flex-direction: column; overflow-y: auto;
+      background: linear-gradient(to bottom, #1e1e24 0%, #09090b 100%);
+    }
+
+    /* --- 3. OTTIMIZZAZIONE TABELLA ADMIN --- */
+    .table-wrap { margin-top: 24px; border-radius: 12px; overflow: hidden; border: 1px solid #27272a; }
+    .table { width: 100%; border-collapse: collapse; text-align: left; background: rgba(0,0,0,0.2); }
+
+    .table th {
+      background-color: #18181b; padding: 12px 16px; color: var(--text-muted);
+      font-size: 0.75rem; text-transform: uppercase; position: sticky; top: 0; z-index: 10;
+    }
+
+    .table td { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; white-space: nowrap; }
+    .table tr:hover { background-color: rgba(255,255,255,0.05); }
+
+    /* Colonne specifiche */
+    .table td:first-child { color: var(--text-muted); font-family: monospace; font-size: 0.8rem; width: 60px; }
+    .table td:nth-child(2) { color: var(--text-main); font-weight: 600; }
+
+    /* --- 4. CONTROLLI DI RICERCA --- */
+    .controls { margin-top: 24px; }
+    .controls form {
+      background: rgba(255, 255, 255, 0.03); padding: 16px; border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05); display: flex; gap: 12px; align-items: center;
+    }
+
+    .input, .select {
+      background-color: #000; border: 1px solid #3f3f46; border-radius: 8px;
+      padding: 10px 14px; color: white; font-size: 0.9rem; transition: var(--transition);
+    }
+    .input:focus, .select:focus { border-color: var(--primary); outline: none; }
+
+    /* --- 5. PULSANTI E AZIONI --- */
+    .flex { display: flex; align-items: center; }
+    .button {
+      padding: 10px 20px; border-radius: 50px; font-weight: 700; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none;
+    }
+    .button-primary { background: var(--primary); color: black; }
+    .button-secondary { background: #27272a; color: white; }
+    .button-ghost { background: transparent; color: var(--text-muted); }
+    .button-sm { padding: 6px 12px; font-size: 0.8rem; }
+
+    .button-danger {
+      border: 1px solid rgba(239, 68, 68, 0.3); background: transparent; color: var(--danger);
+    }
+    .button-danger:hover {
+      background: var(--danger); color: white; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* --- 6. UTILITY --- */
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 24px;
+    }
+    .pills { display: flex; gap: 4px; }
+    .pill { background: #27272a; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; color: var(--text-muted); }
+    .muted { color: var(--text-muted); }
+
+    /* Sidebar Navigation */
+    .nav-item { display: flex; align-items: center; gap: 16px; padding: 10px 12px; color: var(--text-muted); text-decoration: none; font-weight: 600; border-radius: 8px; margin-bottom: 4px; }
+    .nav-item:hover, .nav-item.active { color: white; background: #27272a; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item svg { width: 24px; fill: currentColor; }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-text" style="color: var(--primary); font-size: 1.5rem;">SpotifyIndiano</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title" style="padding-left: 12px; color: var(--text-muted); font-size: 0.7rem; margin-bottom: 10px;">MENU</div>
+        <a th:href="@{/}" class="nav-item">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>Home</span>
+        </a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title" style="padding-left: 12px; color: var(--text-muted); font-size: 0.7rem; margin-bottom: 10px;">AMMINISTRAZIONE</div>
+        <a th:href="@{/admin/brani}" class="nav-item active">
+          <svg viewBox="0 0 24 24"><path d="M12 3v9.28c-.47-.17-.97-.28-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/></svg>
+          <span>Gestione Brani</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <header class="top-header" style="padding: 16px 32px; display: flex; justify-content: flex-end;">
+      <a th:href="@{/logout}" class="button button-ghost button-sm">Esci</a>
+    </header>
+
+    <div class="content-area" style="padding: 0 32px 32px;">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h1 class="page-title" style="font-size: 2rem; font-weight: 800;">Gestione Database Brani</h1>
+            <p class="page-subtitle" style="color: var(--text-muted);">Visualizza, aggiungi o elimina i brani dal database globale</p>
+          </div>
+          <div class="flex" style="gap: 12px;">
+            <a th:href="@{/admin/brani/aggiungi}" class="button button-primary button-sm">
+              Aggiungi Brano
+            </a>
+          </div>
+        </div>
+
+        <div class="controls">
+          <form th:action="@{/admin/brani}" method="get">
+            <input type="text" name="search" th:value="${search}" placeholder="Cerca titolo brano..." class="input" style="flex: 2" />
+            <select name="orderBy" class="select" style="flex: 1">
+              <option value="titolo_asc" th:selected="${orderBy == 'titolo_asc'}">Titolo A-Z</option>
+              <option value="durata_desc" th:selected="${orderBy == 'durata_desc'}">Più lunghi</option>
+              <option value="genere" th:selected="${orderBy == 'genere'}">Per Genere</option>
+            </select>
+            <button type="submit" class="button button-secondary">Filtra</button>
+            <a th:href="@{/admin/brani}" class="button button-ghost">Reset</a>
+          </form>
+        </div>
+
+        <div class="table-wrap" th:if="${not #lists.isEmpty(brani)}">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Titolo</th>
+              <th>Artista/i</th>
+              <th>Durata</th>
+              <th>Generi</th>
+              <th>Azioni</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="brano : ${brani}">
+              <td th:text="${brano.id}">1</td>
+              <td th:text="${brano.titolo}">Titolo</td>
+              <td>
+                <span th:each="a, i : ${brano.autori}" th:text="${a.nome} + ${!i.last ? ', ' : ''}"></span>
+              </td>
+              <td th:text="${brano.durata}">00:00:00</td>
+              <td>
+                <div class="pills">
+                  <span class="pill" th:each="g : ${brano.generi}" th:text="${g.nome}">Genere</span>
+                </div>
+              </td>
+              <td>
+                <form th:action="@{/admin/brani/elimina/{id}(id=${brano.id})}" method="post" onsubmit="return confirm('Eliminare definitivamente?')">
+                  <button type="submit" class="button button-danger button-sm">Elimina</button>
+                </form>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

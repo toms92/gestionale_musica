@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import com.example.spotifyindiano.Model.Playlist;
 
 @Controller
 public class PlaylistController {
@@ -33,6 +35,34 @@ public class PlaylistController {
             model.addAttribute("errorMessage", e.getMessage());
         }
         return "playlist";
+    }
+
+    @GetMapping("/playlist/{id}")
+    public String dettaglioPlaylist(@PathVariable int id, 
+                                    @RequestParam(value = "search", required = false) String search,
+                                    @RequestParam(value = "orderBy", required = false) String orderBy,
+                                    Model model, HttpSession session) {
+        if (session.getAttribute("utente") == null) {
+            return "redirect:/login";
+        }
+        try {
+            Playlist playlist = playlistService.getPlaylistByIdFiltrata(id, search, orderBy);
+            model.addAttribute("p", playlist);
+            model.addAttribute("search", search);
+            model.addAttribute("orderBy", orderBy);
+            return "playlistDettaglio";
+        } catch (IllegalArgumentException e) {
+            return "redirect:/playlist";
+        }
+    }
+
+    @PostMapping("/playlist/{id}/rimuovi/{branoId}")
+    public String rimuoviBrano(@PathVariable int id, @PathVariable int branoId, HttpSession session) {
+        if (session.getAttribute("utente") == null) {
+            return "redirect:/login";
+        }
+        playlistService.rimuoviBranoDaPlaylist(id, branoId);
+        return "redirect:/playlist/" + id;
     }
 
     @GetMapping("/playlist/crea")
